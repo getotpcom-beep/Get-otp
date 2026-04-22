@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+
+<body>
+  
+</body>
+
+</html>
+
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OTP Receive</title>
+
+<style>
+body{
+margin:0;
+font-family:system-ui;
+background:#0a0a0a;
+display:flex;
+justify-content:center;
+}
+
+.app{
+width:100%;
+max-width:420px;
+min-height:100vh;
+background:linear-gradient(180deg,#0a0a0a,#121212);
+color:#fff;
+}
+
+.container{padding:15px;padding-bottom:90px;}
+
+h2{
+text-align:center;
+letter-spacing:1px;
+margin-bottom:5px;
+}
+
+.card{
+background:linear-gradient(145deg,#111,#1c1c1c);
+padding:16px;
+border-radius:16px;
+margin-top:12px;
+box-shadow:0 0 15px rgba(0,0,0,0.6);
+}
+
+/* IMPROVED BOX DESIGN */
+.box{
+padding:14px;
+margin-top:10px;
+background:#101014;
+border-radius:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border:1px solid #222;
+transition:0.2s;
+}
+
+.box:hover{
+border-color:#333;
+}
+
+/* BUTTON */
+button{
+border:none;
+border-radius:10px;
+padding:10px 14px;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+}
+
+button:active{
+transform:scale(0.92);
+}
+
+.buy{
+background:linear-gradient(45deg,#ff9800,#ff5722);
+color:#fff;
+box-shadow:0 0 8px rgba(255,87,34,0.4);
+}
+
+.otp{
+background:linear-gradient(45deg,#00e676,#00c853);
+color:#000;
+box-shadow:0 0 8px rgba(0,255,150,0.4);
+}
+
+.big{
+width:100%;
+margin-top:10px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:10px;
+border:none;
+background:#0d0d0d;
+color:#fff;
+}
+
+/* NAV */
+.nav{
+position:fixed;
+bottom:0;
+width:100%;
+max-width:420px;
+display:flex;
+background:#111;
+border-top:1px solid #222;
+}
+
+.nav button{
+flex:1;
+background:none;
+font-size:18px;
+color:#aaa;
+}
+
+/* PAGES */
+.page{display:none;}
+.active{display:block;}
+
+.qr{
+width:220px;
+display:block;
+margin:15px auto;
+border-radius:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+<div class="container">
+
+<!-- LOGIN -->
+<div id="login" class="page">
+<h2>🔐 Login</h2>
+<div class="card">
+<input id="loginName" placeholder="👤 Name">
+<input id="loginPass" type="password" placeholder="🔒 Password">
+<button class="buy big" onclick="login()">Login</button>
+<p onclick="show('register')" style="text-align:center;">Create Account</p>
+</div>
+</div>
+
+<!-- REGISTER -->
+<div id="register" class="page">
+<h2>📱 Register</h2>
+<div class="card">
+<input id="regName" placeholder="👤 Name">
+<input id="regPass" type="password" placeholder="🔒 Password">
+<button class="buy big" onclick="register()">Create Account</button>
+<p onclick="show('login')" style="text-align:center;">Back to Login</p>
+</div>
+</div>
+
+<!-- HOME -->
+<div id="home" class="page">
+<h2>📩 OTP Receive</h2>
+
+<div class="card">
+<div>💰 Balance: ₹0</div>
+<div>📦 Plan: None</div>
+<div>🔢 OTP Left: 0</div>
+</div>
+
+<div class="card">
+<h3>🔥 Plans</h3>
+
+<div class="box">₹49 (5 OTP) <button class="buy" onclick="buy(49)">Buy</button></div>
+<div class="box">₹99 (10 OTP) <button class="buy" onclick="buy(99)">Buy</button></div>
+<div class="box">₹200 (25 OTP) <button class="buy" onclick="buy(200)">Buy</button></div>
+<div class="box">₹499 (80 OTP) <button class="buy" onclick="buy(499)">Buy</button></div>
+
+</div>
+
+<div class="card">
+<h3>📞 Numbers</h3>
+<div id="numbers"></div>
+</div>
+
+</div>
+
+<!-- DEPOSIT -->
+<div id="deposit" class="page">
+<h2>💳 Deposit</h2>
+<div class="card" style="text-align:center;">
+<p>📷 Scan & Pay</p>
+<img src="ankush.jpg" class="qr">
+<h2 id="amt">₹0</h2>
+<button class="buy big">I Have Paid</button>
+</div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settings" class="page">
+<h2>⚙️ Settings</h2>
+<div class="card">
+<button style="background:red;width:100%;" onclick="logout()">Logout</button>
+</div>
+</div>
+
+</div>
+
+<div class="nav">
+<button onclick="nav('home')">🏠</button>
+<button onclick="nav('deposit')">💳</button>
+<button onclick="nav('settings')">⚙️</button>
+</div>
+
+</div>
+
+<script>
+
+// LOGIN FIRST
+window.onload=()=>{
+show('login');
+loadNumbers();
+}
+
+// LOGIN
+function login(){
+if(
+document.getElementById("loginName").value==localStorage.getItem("user") &&
+document.getElementById("loginPass").value==localStorage.getItem("pass")
+){
+show('home');
+}else{
+alert("❌ Wrong Details");
+}
+}
+
+// REGISTER
+function register(){
+localStorage.setItem("user",document.getElementById("regName").value);
+localStorage.setItem("pass",document.getElementById("regPass").value);
+show('login');
+}
+
+// LOGOUT
+function logout(){
+localStorage.clear();
+show('login');
+}
+
+// NAV
+function nav(p){
+if(!localStorage.getItem("user")) return show('login');
+show(p);
+}
+
+// SHOW
+function show(p){
+document.querySelectorAll(".page").forEach(e=>e.classList.remove("active"));
+document.getElementById(p).classList.add("active");
+}
+
+// BUY
+function buy(amount){
+document.getElementById("amt").innerText="₹"+amount;
+show('deposit');
+}
+
+// OTP CLICK
+function getOtp(){
+alert("⚠️ Buy Plan First");
+show('deposit');
+}
+
+// RANDOM NUMBERS ONLY
+function loadNumbers(){
+let box=document.getElementById("numbers");
+let set=new Set();
+
+while(set.size<150){
+set.add("9"+Math.floor(100000000+Math.random()*900000000));
+}
+
+set.forEach(n=>{
+let d=document.createElement("div");
+d.className="box";
+d.innerHTML=`+91 ${n} <button class="otp" onclick="getOtp()">Get OTP</button>`;
+box.appendChild(d);
+});
+}
+
+</script>
+
+</body>
+</html>
